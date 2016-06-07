@@ -23,7 +23,23 @@ ActionObject.prototype.placeActionObject = function(actionObject, color)
     return actionObject.rectangle;
 }
 
+ActionObject.prototype.removeActionObject = function(actionObject)
+{
+    actionObject.rectangle.graphics.clear();
+}
+
 ActionObject.prototype.checkContact = function(col, actionObject)
 {
-	return col.x + 32 >= actionObject.posX && col.x <= actionObject.posX + actionObject.width && col.y + 32 >= actionObject.posY && col.y <= actionObject.posY + actionObject.height;
+	return col.x + 16 >= actionObject.posX && col.x <= actionObject.posX + actionObject.width && 
+			col.y + 16 >= actionObject.posY && col.y <= actionObject.posY + actionObject.height;
 }
+
+
+
+
+
+
+
+
+
+

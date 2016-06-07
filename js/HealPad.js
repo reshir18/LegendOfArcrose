@@ -1,7 +1,7 @@
 var HealPad = function(x, y, w, h, a, c) 
 {
 	ActionObject.call(this, x, y, w, h);
-    this.amount = h;
+    this.amount = a;
     this.cost = c;
 };
 
@@ -31,5 +31,6 @@ HealPad.prototype.checkContact = function(player)
 	if(ActionObject.prototype.checkContact(player.GetSprite(), this))
     {
         this.playAction(player);
+        return false;
     }
 }
