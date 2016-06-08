@@ -28,8 +28,9 @@ function gameLoop(event)
 {
     actorsAutoUpdate.forEach(actorsCheckContact);
     mapContainer.children.forEach(checkWallsCollider);
-    actorsMobs.forEach(checkMobsCollider);
+    
     player.Update();
+    actorsMobs.forEach(checkMobsCollider);
 
     if ( player.GetSprite().x > Screen.width*.3 && player.GetSprite().x -16 < World.width - Screen.width*.7) 
     {
@@ -65,7 +66,7 @@ function checkWallsCollider(item, index)
 
 function checkMobsCollider(item, index)
 {
-    
+    item.Move(player.GetSprite());
     if(player.GetSprite().x >= item.posX && player.GetSprite().x <= item.posX + item.width && 
             player.GetSprite().y + 16 >= item.posY && player.GetSprite().y <= item.posY + item.height)
     {
