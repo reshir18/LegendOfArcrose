@@ -132,8 +132,23 @@ Player.prototype.UseItem = function()
 
 Player.prototype.GiveItem = function(item)
 {
+    if(this.currentItemSelected == -1)
+        ui.DrawFirstItem();
     this.currentItemSelected++;
     this.currentItem.push(item);
+}
+
+Player.prototype.SwitchItem = function(pos)
+{
+    if(this.currentItem.length <= 0)
+        return;
+    this.currentItemSelected += pos;
+    if(this.currentItemSelected < 0)
+        this.currentItemSelected = this.currentItem.length-1;
+    if(this.currentItemSelected == this.currentItem.length)
+        this.currentItemSelected = 0;
+
+    ui.DrawCurrentItem(this.currentItemSelected);
 }
 
 Player.prototype.TakeMana = function(amount){this.mana = Math.max(0,this.mana - amount);}
@@ -163,6 +178,8 @@ Player.prototype.Update = function()
     this.oldPosition = {x:this.sprite.x, y:this.sprite.y};
     this.sprite.x += this.left * this.speed;
     this.sprite.y += this.top * this.speed;
+    itemContainer.x = this.sprite.x;
+    itemContainer.y = this.sprite.y;
     this.checkBorder();
 }
 

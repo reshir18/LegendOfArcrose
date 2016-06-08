@@ -1,4 +1,4 @@
-createjs.Ticker.setFPS(40);
+createjs.Ticker.setFPS(50);
 createjs.Ticker.useRAF = true;
 createjs.Ticker.on("tick", gameLoop);
 let actorsAutoUpdate = [];
@@ -30,6 +30,9 @@ mainContainer.snapToPixel = true;
 var uiContainer = new createjs.Container();
 uiContainer.snapToPixel = true;
 
+var itemContainer = new createjs.Container();
+itemContainer.snapToPixel = true;
+
 var controls = {
         left: false,
         up: false,
@@ -51,6 +54,7 @@ actorsAutoUpdate.forEach(actorsPlaceOnMap);
 mainStage.addChild(mapContainer);
 mainStage.addChild(mainContainer);
 mainStage.addChild(player.GetSprite());
+mainStage.addChild(itemContainer);
 mainStage.addChild(uiContainer);
 
 ui.CreateBar(125, Screen.height - 80, "red", 100, 200, 20);
@@ -153,8 +157,13 @@ window.addEventListener("keyup", function(e)
             player.MoveEnd("runFront", "standFront", false);
             break;
         case 32:
-            //actorsWaitInputUpdate.forEach(actorsCheckContact);
             player.CastSpell();
-            break;      
+            break;
+        case 81://Q key
+            player.SwitchItem(-1);
+            break;
+        case 69://E key
+            player.SwitchItem(1);
+            break;        
     }
 }, false);
