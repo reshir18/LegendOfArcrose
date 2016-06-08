@@ -30,7 +30,7 @@ Map.prototype.Create = function(squareSize, color1, color2)
             }
             else if(j == 6 && i == 8)
             {
-                mt = new HealPadTile(x, y, squareSize, j+i);
+                mt = new HealPadTile(x, y, squareSize, j+i, 1);
             }
             else if(j == 2 && i == 1)
             {

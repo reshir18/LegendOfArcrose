@@ -1,7 +1,7 @@
 var HealPadTile = function(x, y, wh, i, c)
 {
 	MapTile.call(this, x, y, wh, "healPad", i, "#00CCFF");
-    this.damages = 0.5;
+    this.cost = c;
     this.hasAction = true;
 };
 
@@ -12,10 +12,10 @@ HealPadTile.prototype.constructor = HealPadTile;
 
 HealPadTile.prototype.landAction = function(player)
 {
-    if(player.GetMana() >= 1 && !player.IsFullHp())
+    if(player.GetMana() >= this.cost && !player.IsFullHp())
     {
-        player.Heal(2.5);
-        player.TakeMana(1);
+        player.Heal(1.5);
+        player.TakeMana(this.cost);
         ui.Update(0, player.GetHp());
         ui.Update(1, player.GetMana());
     }

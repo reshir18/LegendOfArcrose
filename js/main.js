@@ -1,60 +1,21 @@
-createjs.Ticker.setFPS(50);
-createjs.Ticker.useRAF = true;
+
 createjs.Ticker.on("tick", gameLoop);
 let actorsAutoUpdate = [];
+var actorsMobs = [];
 
-var Screen = {
-    width: 800,
-    height: 600
-}
-
-var World = {
-    width: 1600,
-    height: 1200
-}
-
-var canvas = document.getElementById("mainGame");
-canvas.width = Screen.width;
-canvas.height = Screen.height;
-
-var mainStage = new createjs.Stage(canvas);
-mainStage.snapToPixelsEnabled = true;
-mainStage.autoClear = true;
-
-var mainContainer = new createjs.Container();
-mainContainer.snapToPixel = true;
-
-var mapContainer = new createjs.Container();
-mainContainer.snapToPixel = true;
-
-var uiContainer = new createjs.Container();
-uiContainer.snapToPixel = true;
-
-var itemContainer = new createjs.Container();
-itemContainer.snapToPixel = true;
-
-var controls = {
-        left: false,
-        up: false,
-        right: false,
-        down: false,
-    };
-
-let player = new Player("images/mainCharacter.png", 32, 32);
-let blockPlayer = false;
-         
+let player = new Player("images/mainCharacter.png", 32, 32);      
 let map = new Map(World.width, World.height, mapContainer);
 var ui = new UI(uiContainer);
 map.Create(50, "green", "#00FF00");
-
-
 actorsAutoUpdate.push(new Potion(600,100,35,35,125,"xp"));
+actorsMobs.push(new Bat(500,500,50,1,10));
 actorsAutoUpdate.forEach(actorsPlaceOnMap);
 
 mainStage.addChild(mapContainer);
 mainStage.addChild(mainContainer);
 mainStage.addChild(player.GetSprite());
-mainStage.addChild(itemContainer);
+mainContainer.addChild(itemContainer);
+mainContainer.addChild(mobContainer);
 mainStage.addChild(uiContainer);
 
 ui.CreateBar(125, Screen.height - 80, "red", 100, 200, 20);
@@ -67,6 +28,7 @@ function gameLoop(event)
 {
     actorsAutoUpdate.forEach(actorsCheckContact);
     mapContainer.children.forEach(checkWallsCollider);
+    actorsMobs.forEach(checkMobsCollider);
     player.Update();
 
     if ( player.GetSprite().x > Screen.width*.3 && player.GetSprite().x -16 < World.width - Screen.width*.7) 
@@ -97,6 +59,17 @@ function checkWallsCollider(item, index)
             player.GetSprite().y + 16 >= tile.Position().y && player.GetSprite().y <= tile.Position().y + tile.Position().height)
     {
         tile.landAction(player);
+    }
+    
+}
+
+function checkMobsCollider(item, index)
+{
+    
+    if(player.GetSprite().x >= item.posX && player.GetSprite().x <= item.posX + item.width && 
+            player.GetSprite().y + 16 >= item.posY && player.GetSprite().y <= item.posY + item.height)
+    {
+        player.HurtMob(item); 
     }
     
 }
@@ -133,6 +106,9 @@ window.addEventListener("keydown", function(e)
         case 40: // down arrow
             player.ChangeDirectionY("Front");
             break;
+        case 32:
+            player.CastSpell();
+            break;
     }
 }, false);
 
@@ -155,15 +131,15 @@ window.addEventListener("keyup", function(e)
         case 83: // S Key
         case 40: // down arrow
             player.MoveEnd("runFront", "standFront", false);
-            break;
-        case 32:
-            player.CastSpell();
-            break;
+            break; 
         case 81://Q key
             player.SwitchItem(-1);
             break;
         case 69://E key
             player.SwitchItem(1);
-            break;        
+            break;
+        case 32:
+            player.CastSpellStop();
+            break;
     }
 }, false);

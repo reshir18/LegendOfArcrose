@@ -32,8 +32,11 @@ UIBar.prototype.CreateDisplayZones = function()
 UIBar.prototype.changeValue = function(newAmount)
 {
     this.rectangle.graphics.clear();
-    fillA = newAmount * this.width / this.maxAmount;
-    this.rectangle.graphics.beginFill(this.color).drawRoundRect(this.positionX, this.positionY, fillA, this.height, roundCurve, roundCurve, roundCurve, roundCurve);
+    if(newAmount > 0)
+    {
+        fillA = newAmount * this.width / this.maxAmount;
+        this.rectangle.graphics.beginFill(this.color).drawRoundRect(this.positionX, this.positionY, fillA, this.height, roundCurve, roundCurve, roundCurve, roundCurve);
+    }
     return  this.rectangle;             
 }
 UIBar.prototype.changeMaxValue = function(newAmount)

@@ -26,13 +26,13 @@ UI.prototype = Object.create(UI.prototype);
 
 UI.prototype.constructor = UI;
 
-UI.prototype.CreateBar = function(x, y, c, m, w, h)
+UI.prototype.CreateBar = function(x, y, color, maxValue, w, h)
 {
-    let barTemp = new UIBar(x, y, c, m, w, h);
-    let barTemp2 = new UIBar(x, y, c, m, w, h);
+    let barTemp = new UIBar(x, y, color, maxValue, w, h);
+    let barTemp2 = new UIBar(x, y, color, maxValue, w, h);
     this.stage.addChild(barTemp.Create());
-    if(c!="green")
-        this.stage.addChild(barTemp2.changeValue(m));
+    if(color!="green")
+        this.stage.addChild(barTemp2.changeValue(maxValue));
     else
         this.stage.addChild(barTemp2.changeValue(0));
     this.bars.push(barTemp2);

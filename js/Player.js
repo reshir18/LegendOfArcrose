@@ -25,26 +25,35 @@ var Player = function(spritePath, width, height)
             spellBack:[33,35],
         }
     };
+    
     this.sprite = new createjs.Sprite(new createjs.SpriteSheet(data));
     this.sprite.snapToPixel = true;
     this.sprite.x = 16;
     this.sprite.y = 16;
-    this.speed = 3 * 2;
-    this.level = 1;
-    this.maxHp = 100;
-    this.maxMana = 100;
-    this.hp = this.maxHp;
-    this.mana = this.maxMana;
-    this.xp = 0;
+
+    this.stats = new PlayerStats();
+    this.stats.GiveStat("speed", 4);
+    this.stats.GiveStat("level", 1);
+    this.stats.GiveStat("maxHp", 100);
+    this.stats.GiveStat("maxMana", 100);
+    this.stats.GiveStat("hp", this.stats.GetStat("maxHp"));
+    this.stats.GiveStat("mana", this.stats.GetStat("maxMana"));
+    this.stats.GiveStat("xp", 0);
+    this.stats.GiveStat("attack", 10);
+
     this.spellMove = "spellFront";
     this.currentMove = "standFront";
     this.newMove = this.currentMove;
+    
     this.left = 0;
     this.top = 0;
     this.oldPosition = {x:16, y:16};
+    
     this.currentItem = [];
     this.currentItemSelected = -1;
+    
     this.reverseHp = false;
+    this.isCasting = false;
 
 };
 
@@ -53,25 +62,21 @@ Player.prototype = Object.create(Player.prototype);
 // on corrige le constructeur qui pointe sur celui de Personne
 Player.prototype.constructor = Player;
 
-Player.prototype.levelUp = function()
-{
-    this.xp -= (this.level * 100);
-    this.speed ++;
-    this.level ++;
-    this.maxHp += 10;
-    this.maxMana += 5;
-    this.hp = this.maxHp;
-    this.mana = this.maxMana;
-    ui.increaseBars(this.hp, this.mana, this.level * 100);  
-}
+Player.prototype.levelUp = function(){this.stats.ChangeStatLevelUp();}
 
 Player.prototype.GetSprite = function(){return this.sprite;}
+
 Player.prototype.GetX = function(){return this.sprite.x;}
+
 Player.prototype.GetY = function(){return this.sprite.y;}
-Player.prototype.GetHp = function(){return this.hp;}
-Player.prototype.IsFullHp = function(){return this.hp == this.maxHp;}
-Player.prototype.GetMana = function(){return this.mana;}
-Player.prototype.GetXp = function(){return this.xp;}
+
+Player.prototype.GetHp = function(){return this.stats.GetStat("hp");}
+
+Player.prototype.IsFullHp = function(){return this.stats.GetStat("hp") == this.stats.GetStat("maxHp");}
+
+Player.prototype.GetMana = function(){return this.stats.GetStat("mana");}
+
+Player.prototype.GetXp = function(){return this.stats.GetStat("xp");}
 
 Player.prototype.Move = function(animationFrameName)
 {
@@ -112,16 +117,29 @@ Player.prototype.ChangeDirectionY = function(animationFrameName)
 
 Player.prototype.CastSpell = function()
 {
+    this.isCasting = true;
     this.sprite.gotoAndStop(this.spellMove);
+    this.sprite.play();
+}
+
+Player.prototype.CastSpellStop = function()
+{
+    this.isCasting = false;
+    this.sprite.gotoAndStop(this.newMove);
     this.sprite.play();
 }
 
 Player.prototype.TakeDamages = function(dmg)
 {
+    if(this.reverseHp && this.stats.GetStat("mana") <= 0)
+        this.UseItem();
     if(this.reverseHp)
-        this.mana = Math.max(0,this.mana - dmg * 1.5);
+        this.stats.ChangeStat("mana", Math.max(0,this.GetMana() - dmg * 1.5));
     else
-        this.hp = Math.max(0,this.hp - dmg);
+        this.stats.ChangeStat("hp", Math.max(0,this.GetHp() - dmg));
+
+    ui.Update(0, this.GetHp());
+    ui.Update(1, this.GetMana());
 }
 
 Player.prototype.UseItem = function()
@@ -136,6 +154,7 @@ Player.prototype.GiveItem = function(item)
         ui.DrawFirstItem();
     this.currentItemSelected++;
     this.currentItem.push(item);
+    ui.DrawCurrentItem(this.currentItemSelected);
 }
 
 Player.prototype.SwitchItem = function(pos)
@@ -151,33 +170,46 @@ Player.prototype.SwitchItem = function(pos)
     ui.DrawCurrentItem(this.currentItemSelected);
 }
 
-Player.prototype.TakeMana = function(amount){this.mana = Math.max(0,this.mana - amount);}
+Player.prototype.TakeMana = function(amount){this.stats.ChangeStat("mana", Math.max(0,this.GetMana() - amount));}
 
-Player.prototype.Heal = function(amount){this.hp = Math.min(this.maxHp,this.hp + amount);}
+Player.prototype.Heal = function(amount){this.stats.ChangeStat("hp", Math.min(this.stats.GetStat("maxHp"),this.GetHp() + amount));}
 
-Player.prototype.RestoreMana = function(amount){this.mana = Math.min(this.mana,this.mana + amount);}
+Player.prototype.RestoreMana = function(amount){this.stats.ChangeStat("mana", Math.min(this.stats.GetStat("maxMana"),this.GetMana() + amount));}
 
 Player.prototype.GiveXp = function(amount)
 {
-    this.xp += amount;
-    if(this.xp >= this.level * 100)
+    this.stats.ChangeStat("xp", this.stats.GetStat("xp") + amount);
+    if(this.stats.GetStat("maxMana") >= this.stats.GetStat("level") * 100)
     {
         this.levelUp();
         this.GiveXp(0);
     }
 }
 
+Player.prototype.HurtMob = function(mob)
+{
+    if(!this.isCasting)
+        this.TakeDamages(mob.getAttack());
+    else
+        mob.TakeDamages(this.stats.GetStat("attack"));
+}
+
 Player.prototype.Update = function()
 {
-    if(this.currentMove !== this.newMove)
+    if(this.currentMove !== this.newMove && (this.spellMove !== this.currentMove || !this.isCasting))
     {
-
         this.sprite.gotoAndPlay(this.newMove);
+        if(this.isCasting && this.newMove !== this.spellMove)
+        {
+            this.newMove = this.spellMove;
+            this.sprite.gotoAndPlay(this.newMove);
+
+        }
         this.currentMove = this.newMove;
     }
     this.oldPosition = {x:this.sprite.x, y:this.sprite.y};
-    this.sprite.x += this.left * this.speed;
-    this.sprite.y += this.top * this.speed;
+    this.sprite.x += this.left * this.stats.GetStat("speed");
+    this.sprite.y += this.top * this.stats.GetStat("speed");
     itemContainer.x = this.sprite.x;
     itemContainer.y = this.sprite.y;
     this.checkBorder();
