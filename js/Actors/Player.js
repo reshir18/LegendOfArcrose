@@ -72,11 +72,23 @@ Player.prototype.GetY = function(){return this.sprite.y;}
 
 Player.prototype.GetHp = function(){return this.stats.GetStat("hp");}
 
-Player.prototype.IsFullHp = function(){return this.stats.GetStat("hp") == this.stats.GetStat("maxHp");}
+Player.prototype.GetMaxHp = function(){return this.stats.GetStat("maxHp");}
+
+Player.prototype.IsFullHp = function(){return this.GetHp() == this.GetMaxHp();}
 
 Player.prototype.GetMana = function(){return this.stats.GetStat("mana");}
 
+Player.prototype.GetMaxMana = function(){return this.stats.GetStat("maxMana");}
+
+Player.prototype.IsFullMana = function(){return this.GetMana() == this.GetMaxMana();}
+
 Player.prototype.GetXp = function(){return this.stats.GetStat("xp");}
+
+Player.prototype.GetLevel = function(){return this.stats.GetStat("level");}
+
+Player.prototype.GetAttack = function(){return this.stats.GetStat("attack");}
+
+Player.prototype.GetSpeed = function(){return this.stats.GetStat("speed");}
 
 Player.prototype.Move = function(animationFrameName)
 {
@@ -142,10 +154,10 @@ Player.prototype.TakeDamages = function(dmg)
     ui.Update(1, this.GetMana());
 }
 
-Player.prototype.UseItem = function()
+Player.prototype.UseItem = function(mouse)
 {
     if(this.currentItem.length > 0)
-        this.currentItem[this.currentItemSelected].Use(this);
+        this.currentItem[this.currentItemSelected].Use(this, mouse);
 }
 
 Player.prototype.GiveItem = function(item)
@@ -179,11 +191,12 @@ Player.prototype.RestoreMana = function(amount){this.stats.ChangeStat("mana", Ma
 Player.prototype.GiveXp = function(amount)
 {
     this.stats.ChangeStat("xp", this.stats.GetStat("xp") + amount);
-    if(this.stats.GetStat("maxMana") >= this.stats.GetStat("level") * 100)
+    if(this.GetXp() >= this.stats.GetStat("level") * 100)
     {
         this.levelUp();
         this.GiveXp(0);
     }
+    ui.Update(2, this.GetXp());
 }
 
 Player.prototype.HurtMob = function(mob)
@@ -191,7 +204,7 @@ Player.prototype.HurtMob = function(mob)
     if(!this.isCasting)
         this.TakeDamages(mob.getAttack());
     else
-        mob.TakeDamages(this.stats.GetStat("attack"));
+        this.GiveXp(mob.TakeDamages(this.GetAttack()));
 }
 
 Player.prototype.Update = function()

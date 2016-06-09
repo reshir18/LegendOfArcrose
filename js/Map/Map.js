@@ -39,7 +39,7 @@ Map.prototype.Create = function(squareSize, color1, color2)
             }
             else if(j == 4 && i == 4)
             {
-                mt = new ItemTile(x, y, squareSize, j+i, new Shield(), color);
+                mt = new ItemTile(x, y, squareSize, j+i, new Bow(), color);
             }
             else
             {

@@ -10,6 +10,7 @@ var Mobs = function(x, y, w, h, l, s, xp, att, scaleX, scaleY)
     this.attack = att;
     this.scaleX = scaleX;
     this.scaleY = scaleY;
+    this.isAlive = true;
 };
 
 Mobs.prototype = Object.create(Mobs.prototype);
@@ -20,13 +21,13 @@ Mobs.prototype.Move = function(player)
 {
     let moveX = 1;
     let moveY = 1;
-    if(player.x - this.width * this.scaleX/2 < this.posX)
+    if(player.x  < this.posX)
         moveX = -1;
-    else if (player.x == this.posX)
+    else if (player.x - this.width * this.scaleX/2 == this.posX)
         moveX = 0;
     if(player.y < this.posY)
         moveY = -1;
-    else if (player.y == this.posY)
+    else if (player.y - this.height * this.scaleY/2 == this.posY)
         moveY = 0;
 
     this.posX += moveX * this.speed;
@@ -35,18 +36,13 @@ Mobs.prototype.Move = function(player)
     //this.healthBar.setTransform(this.posX, this.posY - 15);
 }
 
-Mobs.prototype.checkContact = function(col, actionObject)
-{
-	return col.x + 16 >= actionObject.posX && col.x <= actionObject.posX + actionObject.width && 
-			col.y + 16 >= actionObject.posY && col.y <= actionObject.posY + actionObject.height;
-}
 Mobs.prototype._CreateMob = function(image, scaleX, scaleY)
 {
     this.sprite = new createjs.Bitmap("images/Mobs/" + image + ".png");
     this.sprite.setTransform(this.posX, this.posY, this.scaleX, this.scaleY);
-    this.healthBar = new UIBar(this.posX, this.posY - 15, "red", this.life, this.width * this.scaleX, 5);
+    //this.healthBar = new UIBar(this.posX, this.posY - 15, "red", this.life, this.width * this.scaleX, 5);
     mobContainer.addChild(this.sprite);
-    mobContainer.addChild(this.healthBar.changeValue(this.life));
+    //mobContainer.addChild(this.healthBar.changeValue(this.life));
     
 }
 Mobs.prototype.TakeDamages = function(amount)
@@ -54,13 +50,17 @@ Mobs.prototype.TakeDamages = function(amount)
     if(this.life - amount <= 0)
     {
         mobContainer.removeChild(this.sprite);
-        this.healthBar.changeValue(-1);
-        actorsMobs.splice(this, 1);
+        //this.healthBar.changeValue(-1);
+        this.isAlive = false;
+        actorsAutoUpdate.push(new Potion(this.sprite.x,this.sprite.y,35,35,15,"heal"));
+        mainContainer.addChild(actorsAutoUpdate[actorsAutoUpdate.length - 1].placeActionObject());
+        return this.xp;
     }
     else
     {
         this.life -= amount;
-        this.healthBar.changeValue(this.life);
+        //this.healthBar.changeValue(this.life);
+        return 0;
     }
 }
 
@@ -80,10 +80,6 @@ Bat.prototype = Object.create(Mobs.prototype);
 // on corrige le constructeur qui pointe sur celui de Personne
 Bat.prototype.constructor = Bat;
 
-Bat.prototype.checkContact = function(col, actionObject)
-{
-    
-}
 Bat.prototype.CreateMob = function(img)
 {
     Mobs.prototype._CreateMob.call(this, img, 0.7, 0.7);

@@ -32,5 +32,6 @@ PlayerStats.prototype.ChangeStatLevelUp = function()
     this.allStats["maxMana"] += 5;
     this.allStats["hp"] = this.allStats["maxHp"];
     this.allStats["mana"] = this.allStats["maxMana"];
+    this.allStats["attack"] += 5;
     ui.increaseBars(this.allStats["hp"], this.allStats["mana"], this.allStats["level"] * 100);
 }

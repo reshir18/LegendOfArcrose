@@ -1,5 +1,7 @@
 createjs.Ticker.setFPS(50);
 createjs.Ticker.useRAF = true;
+var textFPS = new createjs.Text("Hello World", "20px Arial", "#ff7700");
+textFPS.x = 100;
 
 var Screen = {
     width: 800,
@@ -19,6 +21,10 @@ var mainStage = new createjs.Stage(canvas);
 mainStage.snapToPixelsEnabled = true;
 mainStage.autoClear = true;
 
+var pausedStage = new createjs.Stage(canvas);
+pausedStage.snapToPixelsEnabled = true;
+pausedStage.autoClear = true;
+
 var mainContainer = new createjs.Container();
 mainContainer.snapToPixel = true;
 
@@ -27,6 +33,9 @@ mainContainer.snapToPixel = true;
 
 var uiContainer = new createjs.Container();
 uiContainer.snapToPixel = true;
+
+var uiPausedContainer = new createjs.Container();
+uiPausedContainer.snapToPixel = true;
 
 var itemContainer = new createjs.Container();
 itemContainer.snapToPixel = true;
@@ -40,3 +49,4 @@ var controls = {
         right: false,
         down: false,
     };
+

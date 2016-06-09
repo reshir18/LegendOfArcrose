@@ -1,22 +1,30 @@
 
 createjs.Ticker.on("tick", gameLoop);
-let actorsAutoUpdate = [];
+var actorsAutoUpdate = [];
 var actorsMobs = [];
 
 let player = new Player("images/mainCharacter.png", 32, 32);      
 let map = new Map(World.width, World.height, mapContainer);
 var ui = new UI(uiContainer);
+var uiPaused = new UIPaused(uiPausedContainer);
 map.Create(50, "green", "#00FF00");
 actorsAutoUpdate.push(new Potion(600,100,35,35,125,"xp"));
-actorsMobs.push(new Bat(500,500,50,1,10));
+
+for(let i = 0; i < 10; i++)
+{
+    actorsMobs.push(new Bat(100 * (i + 1),100 * (i + 1),50,1,25));
+}
+//actorsMobs.push(new Bat(500,500,50,1,25));
 actorsAutoUpdate.forEach(actorsPlaceOnMap);
 
 mainStage.addChild(mapContainer);
 mainStage.addChild(mainContainer);
-mainStage.addChild(player.GetSprite());
+mainContainer.addChild(player.GetSprite());
 mainContainer.addChild(itemContainer);
 mainContainer.addChild(mobContainer);
 mainStage.addChild(uiContainer);
+pausedStage.addChild(uiPausedContainer);
+uiContainer.addChild(textFPS);
 
 ui.CreateBar(125, Screen.height - 80, "red", 100, 200, 20);
 ui.CreateBar(125, Screen.height - 40, "blue", 100, 200, 20);
@@ -26,12 +34,36 @@ mainStage.on("stagemousedown", UseItem);
 
 function gameLoop(event) 
 {
+    if (!event.paused) 
+    {
+        mainGameLoop(event);
+    }
+    else
+    {
+        pausedGameLoop(event);
+    } 
+}
+
+function mainGameLoop(event)
+{
+    textFPS.text = createjs.Ticker.getMeasuredFPS();
     actorsAutoUpdate.forEach(actorsCheckContact);
     mapContainer.children.forEach(checkWallsCollider);
     
     player.Update();
     actorsMobs.forEach(checkMobsCollider);
+    checkBorderCollider();
+    
+    mainStage.update(event);
+}
 
+function pausedGameLoop(event)
+{
+    pausedStage.update(event);
+}
+
+function checkBorderCollider()
+{
     if ( player.GetSprite().x > Screen.width*.3 && player.GetSprite().x -16 < World.width - Screen.width*.7) 
     {
         mainStage.x = -player.GetSprite().x + Screen.width*.3;
@@ -42,13 +74,12 @@ function gameLoop(event)
         mainStage.y = -player.GetSprite().y + Screen.height *.7;
         uiContainer.y = player.GetSprite().y - Screen.height *.7;
     }
-    mainStage.update(event);
 }
 
 function UseItem(evt) 
 {
-    player.UseItem();
-    console.log("stageX/Y: "+evt.stageX+","+evt.stageY);
+    player.UseItem({mouseX: evt.stageX, mouseY: evt.stageY});
+    console.log("stageX/Y: "+evt.localX+","+evt.localY);
 }
 
 function checkWallsCollider(item, index)
@@ -61,18 +92,18 @@ function checkWallsCollider(item, index)
     {
         tile.landAction(player);
     }
-    
 }
 
 function checkMobsCollider(item, index)
 {
-    item.Move(player.GetSprite());
+    if(item.posX > uiContainer.x + Screen.width || item.posY > uiContainer.y + Screen.height || !item.isAlive)
+        return;
+    item.Move(player.GetSprite());    
     if(player.GetSprite().x >= item.posX && player.GetSprite().x <= item.posX + item.width && 
             player.GetSprite().y + 16 >= item.posY && player.GetSprite().y <= item.posY + item.height)
     {
         player.HurtMob(item); 
     }
-    
 }
 
 function actorsCheckContact(item, index) 
@@ -141,6 +172,10 @@ window.addEventListener("keyup", function(e)
             break;
         case 32:
             player.CastSpellStop();
+            break;
+        case 27://ESCAPE
+            uiPaused.UpdateAllStats();
+            createjs.Ticker.paused = !createjs.Ticker.paused;
             break;
     }
 }, false);

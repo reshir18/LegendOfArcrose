@@ -1,5 +1,5 @@
 let itemsArray = ["shield", "bow", "wand"];
-
+let LEVEL_STRING = "Level:  ";
 var UI = function(s) 
 {
     this.stage = s;
@@ -7,7 +7,6 @@ var UI = function(s)
     let barTemp = new UIBar(0, Screen.height - 100,0, 0, Screen.width, 100);
     this.stage.addChild(barTemp.CreateDisplayZones());
     this.drawPlayerFace();
-    //this.drawCurrentItem();
     let data = {
         images: ["images/Items/items.png"],
         frames: {width:64, height:64},
@@ -17,6 +16,10 @@ var UI = function(s)
             wand: 2
         }
     };
+    this.textLevelCurrent = new createjs.Text(LEVEL_STRING + "1", "28px Arial", "#222222");
+    this.textLevelCurrent.x = 350;
+    this.textLevelCurrent.y = Screen.height - 80;
+    this.stage.addChild(this.textLevelCurrent);
     this.currentItemImage = new createjs.Sprite(new createjs.SpriteSheet(data));
     
     this.currentItemImage.setTransform(Screen.width - 84, Screen.height - 84, 1, 1);
@@ -51,7 +54,8 @@ UI.prototype.increaseBars = function(a1, a2, a3)
 {
     this.bars[0].changeMaxValue(a1);
     this.bars[1].changeMaxValue(a2);              
-    this.bars[2].changeMaxValue(a3);              
+    this.bars[2].changeMaxValue(a3);
+    this.textLevelCurrent.text = LEVEL_STRING + a3 / 100;             
 }
 
 UI.prototype.DrawCurrentItem = function(item)
