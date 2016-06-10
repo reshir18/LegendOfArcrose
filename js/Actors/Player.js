@@ -98,21 +98,25 @@ Player.prototype.Move = function(animationFrameName)
 
 Player.prototype.MoveEnd = function(oldMove, newMove, isLeft)
 {
+    this.newMove = (this.isCasting ? "spell" : "run");
    if(isLeft)
     this.left = 0;
    else
     this.top = 0;
 
     if(this.left == -1)
-        this.newMove = "runLeft";
+        this.newMove += "Left";
     else if(this.left == 1)
-        this.newMove = "runRight";
+        this.newMove += "Right";
     else if(this.top == -1)
-        this.newMove = "runBack";
+        this.newMove += "Back";
     else if(this.top == 1)
-        this.newMove = "runFront";
+        this.newMove += "Front";
     else
         this.newMove = (this.currentMove == oldMove ? newMove : this.currentMove);
+
+    this.sprite.gotoAndPlay(this.newMove);
+    this.currentMove = this.newMove;
 }
 
 Player.prototype.ChangeDirectionX = function(animationFrameName)
@@ -129,16 +133,24 @@ Player.prototype.ChangeDirectionY = function(animationFrameName)
 
 Player.prototype.CastSpell = function()
 {
+    if(this.sprite.currentAnimation == this.spellMove)
+        return;
     this.isCasting = true;
     this.sprite.gotoAndStop(this.spellMove);
     this.sprite.play();
+    console.log(this.spellMove);
 }
 
 Player.prototype.CastSpellStop = function()
 {
     this.isCasting = false;
+    if(this.left == 0 && this.top == 0)
+        this.newMove = "stand" + this.newMove.substring(5);
+    else
+        this.newMove = "run" + this.newMove.substring(3);
     this.sprite.gotoAndStop(this.newMove);
     this.sprite.play();
+    //this.currentMove = this.newMove;
 }
 
 Player.prototype.TakeDamages = function(dmg)
@@ -209,7 +221,9 @@ Player.prototype.HurtMob = function(mob)
 
 Player.prototype.Update = function()
 {
-    if(this.currentMove !== this.newMove && (this.spellMove !== this.currentMove || !this.isCasting))
+    if(!this.isCasting && this.sprite.currentAnimation.includes("spell"))
+        this.newMove = "stand" + this.sprite.currentAnimation.substring(5); 
+    if((!this.isCasting && this.spellMove == this.currentMove) || (this.currentMove !== this.newMove && this.spellMove !== this.currentMove))
     {
         this.sprite.gotoAndPlay(this.newMove);
         if(this.isCasting && this.newMove !== this.spellMove)
@@ -226,6 +240,12 @@ Player.prototype.Update = function()
     itemContainer.x = this.sprite.x;
     itemContainer.y = this.sprite.y;
     this.checkBorder();
+}
+
+Player.prototype.stopCasting = function()
+{
+    this.sprite.x = this.oldPosition.x;
+    this.sprite.y = this.oldPosition.y;
 }
 
 Player.prototype.SetOldPosition = function()

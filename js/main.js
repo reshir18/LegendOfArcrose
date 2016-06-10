@@ -10,10 +10,10 @@ var uiPaused = new UIPaused(uiPausedContainer);
 map.Create(50, "green", "#00FF00");
 actorsAutoUpdate.push(new Potion(600,100,35,35,125,"xp"));
 
-for(let i = 0; i < 10; i++)
+/*for(let i = 0; i < 10; i++)
 {
     actorsMobs.push(new Bat(100 * (i + 1),100 * (i + 1),50,1,25));
-}
+}*/
 //actorsMobs.push(new Bat(500,500,50,1,25));
 actorsAutoUpdate.forEach(actorsPlaceOnMap);
 
