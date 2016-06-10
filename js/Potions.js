@@ -1,4 +1,4 @@
-var Potion = function(x, y, w, h, a, t) 
+var Potion = function(x, y, w, h, a, t)
 {
 	ActionObject.call(this, x, y, w, h);
 	let data = {
@@ -20,31 +20,28 @@ var Potion = function(x, y, w, h, a, t)
 
 Potion.prototype = Object.create(ActionObject.prototype);
 
-// on corrige le constructeur qui pointe sur celui de Personne
 Potion.prototype.constructor = Potion;
 
 Potion.prototype.playAction = function(player)
 {
 	switch(this.type)
     {
-        case "heal": // A key 
+        case "heal":
             player.Heal(this.amount);
             break;
-        case "xp": // W key
+        case "xp":
             player.GiveXp(this.amount);
             break;
-        case "mana": // D key  
+        case "mana":
             player.RestoreMana(this.amount);
             break;
-        default: 
+        default:
             return;
     }
-    //player.TakeDamages(this.damages);
     ui.Update(0, player.GetHp());
     ui.Update(1, player.GetMana());
     ui.Update(2, player.GetXp());
     this.type = "none";
-    //ActionObject.prototype.removeActionObject(this);
 }
 
 Potion.prototype.placeActionObject = function()

@@ -1,4 +1,4 @@
-var Items = function(name, manacost) 
+var Items = function(name, manacost)
 {
     this.name = name;
     this.manaCost = manacost;
@@ -17,7 +17,7 @@ Items.prototype.HurtMob = function(item, index, arrow)
 {
     if(item.posX > uiContainer.x + Screen.width || item.posY > uiContainer.y + Screen.height || !item.isAlive)
         return;
-    if(arrow.x >= item.posX && arrow.x <= item.posX + item.width && 
+    if(arrow.x >= item.posX && arrow.x <= item.posX + item.width &&
             arrow.y >= item.posY && arrow.y <= item.posY + item.height)
     {
         player.GiveXp(item.TakeDamages(player.GetAttack() / 2));
@@ -25,7 +25,7 @@ Items.prototype.HurtMob = function(item, index, arrow)
 }
 
 
-var Shield = function() 
+var Shield = function()
 {
     Items.call(this, "shield", 20);
     this.itemShield = new createjs.Shape();
@@ -55,7 +55,7 @@ Shield.prototype.ShowShield = function(visible)
 		this.itemShield.graphics.clear();
 }
 
-var Bow = function() 
+var Bow = function()
 {
     Items.call(this, "bow", 5);
     this.itemArrow = new createjs.Shape();
@@ -72,7 +72,7 @@ Bow.prototype.Use = function(player, mouse)
     if(player.GetMana() >= this.manaCost)
     {
         player.TakeMana(this.manaCost);
-        
+
         this.ThrowArrow(mouse, player);
         Items.prototype.Use(player);
     }
@@ -83,7 +83,7 @@ Bow.prototype.ThrowArrow = function(position, player)
     let arrowPositionX = position.mouseX;
     let arrowPositionY = position.mouseY;
     this.itemArrow.graphics.setStrokeStyle(2,"round").beginStroke("black").beginFill("red").drawCircle(0, 0, 10);
-    
+
     if(itemContainer.x > Screen.width * 0.3)
         arrowPositionX += itemContainer.x - Screen.width * 0.3;
     if(itemContainer.y > Screen.height * 0.7)
@@ -95,7 +95,7 @@ Bow.prototype.ThrowArrow = function(position, player)
         .to({x: arrowPositionX, y:arrowPositionY}, 2000 / player.GetSpeed())
         .set({x:0, y:0})
         .call(handleChange);
-    function handleChange(event) 
+    function handleChange(event)
     {
         this.graphics.clear();
         arrowPositionX += itemContainer.x;

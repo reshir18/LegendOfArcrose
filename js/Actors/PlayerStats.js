@@ -1,11 +1,10 @@
-var PlayerStats = function() 
+var PlayerStats = function()
 {
     this.allStats = [];
 };
 
 PlayerStats.prototype = Object.create(PlayerStats.prototype);
 
-// on corrige le constructeur qui pointe sur celui de Personne
 PlayerStats.prototype.constructor = PlayerStats;
 
 PlayerStats.prototype.GiveStat = function(name, value)

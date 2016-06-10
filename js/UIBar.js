@@ -1,5 +1,5 @@
 var roundCurve = 2;
-var UIBar = function(x, y, c, m, w, h) 
+var UIBar = function(x, y, c, m, w, h)
 {
     this.positionX = x;
     this.positionY = y;
@@ -16,17 +16,17 @@ UIBar.prototype = Object.create(UIBar.prototype);
 UIBar.prototype.constructor = UIBar;
 
 UIBar.prototype.Create = function()
-{   
-    let rect = new createjs.Shape(); 
+{
+    let rect = new createjs.Shape();
     rect.graphics.beginStroke("black").beginFill("white").drawRoundRect(this.positionX, this.positionY, this.width, this.height, roundCurve, roundCurve, roundCurve, roundCurve);
-    return  rect;             
+    return  rect;
 }
 
 UIBar.prototype.CreateDisplayZones = function()
-{   
-    let rect = new createjs.Shape(); 
+{
+    let rect = new createjs.Shape();
     rect.graphics.beginStroke("black").beginFill("#808080").drawRoundRect(this.positionX, this.positionY, this.width, this.height, 10, 10, 10, 10);
-    return  rect;             
+    return  rect;
 }
 
 UIBar.prototype.changeValue = function(newAmount)
@@ -37,10 +37,10 @@ UIBar.prototype.changeValue = function(newAmount)
         fillA = newAmount * this.width / this.maxAmount;
         this.rectangle.graphics.beginFill(this.color).drawRoundRect(this.positionX, this.positionY, fillA, this.height, roundCurve, roundCurve, roundCurve, roundCurve);
     }
-    return  this.rectangle;             
+    return  this.rectangle;
 }
 UIBar.prototype.changeMaxValue = function(newAmount)
 {
     this.maxAmount = newAmount;
-    this.changeValue(this.maxAmount);             
+    this.changeValue(this.maxAmount);
 }

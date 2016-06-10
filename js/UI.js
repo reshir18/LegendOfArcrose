@@ -1,6 +1,6 @@
 let itemsArray = ["shield", "bow", "wand"];
 let LEVEL_STRING = "Level:  ";
-var UI = function(s) 
+var UI = function(s)
 {
     this.stage = s;
     this.bars = [];
@@ -21,7 +21,7 @@ var UI = function(s)
     this.textLevelCurrent.y = Screen.height - 80;
     this.stage.addChild(this.textLevelCurrent);
     this.currentItemImage = new createjs.Sprite(new createjs.SpriteSheet(data));
-    
+
     this.currentItemImage.setTransform(Screen.width - 84, Screen.height - 84, 1, 1);
 };
 
@@ -47,23 +47,23 @@ UI.prototype.drawPlayerFace = function()
 {
     let persoFace = new createjs.Bitmap("images/mainCharacterFace.png");
     persoFace.setTransform(25, Screen.height - 75, 1, 1);
-    this.stage.addChild(persoFace);              
+    this.stage.addChild(persoFace);
 }
 
 UI.prototype.increaseBars = function(a1, a2, a3)
 {
     this.bars[0].changeMaxValue(a1);
-    this.bars[1].changeMaxValue(a2);              
+    this.bars[1].changeMaxValue(a2);
     this.bars[2].changeMaxValue(a3);
-    this.textLevelCurrent.text = LEVEL_STRING + a3 / 100;             
+    this.textLevelCurrent.text = LEVEL_STRING + a3 / 100;
 }
 
 UI.prototype.DrawCurrentItem = function(item)
 {
-    this.currentItemImage.gotoAndStop(itemsArray[item]);          
+    this.currentItemImage.gotoAndStop(itemsArray[item]);
 }
 
 UI.prototype.DrawFirstItem = function()
 {
-    this.stage.addChild(this.currentItemImage);      
+    this.stage.addChild(this.currentItemImage);
 }

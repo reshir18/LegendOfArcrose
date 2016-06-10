@@ -1,5 +1,5 @@
 createjs.Ticker.setFPS(50);
-createjs.Ticker.useRAF = true;
+//createjs.Ticker.useRAF = true;
 var textFPS = new createjs.Text("Hello World", "20px Arial", "#ff7700");
 textFPS.x = 100;
 
@@ -49,4 +49,23 @@ var controls = {
         right: false,
         down: false,
     };
+
+var preload = new createjs.LoadQueue();
+preload.on("fileload", handleFileLoad, this);
+preload.loadFile("maps/Beta1.txt");
+preload.loadFile("maps/Beta2.txt");
+var mapArray = [];
+
+function handleFileLoad(event)
+{
+	if(mapArray.length > 0)
+	{
+		mapArray = event.result.split( "\n");
+		return;
+	}
+	mapArray = event.result.split( "\n");
+  	map.Create(50, "green", "#00FF00", mapArray);
+  	console.log(mapArray);
+  	createjs.Ticker.paused = false;
+}
 

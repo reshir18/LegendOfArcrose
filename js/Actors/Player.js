@@ -3,9 +3,9 @@ dirrectionArray["Left"] = -1;
 dirrectionArray["Back"] = -1;
 dirrectionArray["Right"] = 1;
 dirrectionArray["Front"] = 1;
-var Player = function(spritePath, width, height) 
+var Player = function(spritePath, width, height)
 {
-    let data = 
+    let data =
     {
         images: [spritePath],
         frames: {width:width, height:height, regX: width/2, regY: height/2},
@@ -25,11 +25,12 @@ var Player = function(spritePath, width, height)
             spellBack:[33,35],
         }
     };
-    
+
     this.sprite = new createjs.Sprite(new createjs.SpriteSheet(data));
     this.sprite.snapToPixel = true;
     this.sprite.x = 16;
     this.sprite.y = 16;
+    this.sprite.gotoAndStop("standFront");
 
     this.stats = new PlayerStats();
     this.stats.GiveStat("speed", 4);
@@ -44,14 +45,14 @@ var Player = function(spritePath, width, height)
     this.spellMove = "spellFront";
     this.currentMove = "standFront";
     this.newMove = this.currentMove;
-    
+
     this.left = 0;
     this.top = 0;
     this.oldPosition = {x:16, y:16};
-    
+
     this.currentItem = [];
     this.currentItemSelected = -1;
-    
+
     this.reverseHp = false;
     this.isCasting = false;
 
@@ -222,7 +223,7 @@ Player.prototype.HurtMob = function(mob)
 Player.prototype.Update = function()
 {
     if(!this.isCasting && this.sprite.currentAnimation.includes("spell"))
-        this.newMove = "stand" + this.sprite.currentAnimation.substring(5); 
+        this.newMove = "stand" + this.sprite.currentAnimation.substring(5);
     if((!this.isCasting && this.spellMove == this.currentMove) || (this.currentMove !== this.newMove && this.spellMove !== this.currentMove))
     {
         this.sprite.gotoAndPlay(this.newMove);
@@ -246,6 +247,12 @@ Player.prototype.stopCasting = function()
 {
     this.sprite.x = this.oldPosition.x;
     this.sprite.y = this.oldPosition.y;
+}
+
+Player.prototype.Spawn = function(x, y)
+{
+    this.sprite.x = x;
+    this.sprite.y = y;
 }
 
 Player.prototype.SetOldPosition = function()

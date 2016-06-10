@@ -25,3 +25,4 @@ WallTile.prototype.Position = function()
 {
 	return this.position;
 }
+

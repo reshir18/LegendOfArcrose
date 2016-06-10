@@ -29,7 +29,7 @@ TrapTile.prototype.Position = function()
 	return this.position;
 }
 
-var WallTile = function(x, y, wh, i, c)
+var WallTile = function(x, y, wh, i)
 {
 	MapTile.call(this, x, y, wh, "wall", i, "grey");
     this.hasAction = true;
@@ -55,4 +55,32 @@ WallTile.prototype.Create = function(tile)
 WallTile.prototype.Position = function()
 {
 	return this.position;
+}
+
+var PortalTile = function(x, y, wh, i)
+{
+    MapTile.call(this, x, y, wh, "portal", i, "#660066");
+    this.hasAction = true;
+};
+
+PortalTile.prototype = Object.create(MapTile.prototype);
+
+// on corrige le constructeur qui pointe sur celui de Personne
+PortalTile.prototype.constructor = PortalTile;
+
+PortalTile.prototype.landAction = function(player)
+{
+    map.ResetMapFile(50, "blue", "#003366");
+}
+
+PortalTile.prototype.Create = function(tile)
+{
+    let rectTemp = new createjs.Shape();
+    rectTemp.graphics.beginFill(tile.tileColor).drawRect(tile.x, tile.y, tile.size, tile.size);
+    return rectTemp;
+}
+
+PortalTile.prototype.Position = function()
+{
+    return this.position;
 }
