@@ -52,20 +52,20 @@ var controls = {
 
 var preload = new createjs.LoadQueue();
 preload.on("fileload", handleFileLoad, this);
-preload.loadFile("maps/Beta1.txt");
-preload.loadFile("maps/Beta2.txt");
+preload.loadFile("maps/Map.json");
+//preload.loadFile("maps/Beta2.txt");
 var mapArray = [];
 
 function handleFileLoad(event)
 {
-	if(mapArray.length > 0)
+	/*if(mapArray.length > 0)
 	{
-		mapArray = event.result.split( "\n");
+		mapArray = event.result;
+		alert("DFSDF");
 		return;
-	}
-	mapArray = event.result.split( "\n");
+	}*/
+	mapArray = event.result;
   	map.Create(50, "green", "#00FF00", mapArray);
-  	console.log(mapArray);
   	createjs.Ticker.paused = false;
 }
 

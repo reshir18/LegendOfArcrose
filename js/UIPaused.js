@@ -73,7 +73,7 @@ UIPaused.prototype.displayAllImages = function(data)
 {
     let posY = 125;
     let posX = 0;
-    for(let i = 0; i < itemsArray.length; i++)
+    for(let i = 0; i < player.GetItems().length; i++)
     {
         if(i == 3)
         {
@@ -82,7 +82,7 @@ UIPaused.prototype.displayAllImages = function(data)
         }
         let imgTemp = new createjs.Sprite(new createjs.SpriteSheet(data));
         imgTemp.setTransform(25 + (posX*(64*1.5)), posY, 1.5, 1.5);
-        imgTemp.gotoAndStop(itemsArray[i]);
+        imgTemp.gotoAndStop(player.GetItems()[i]);
         this.stage.addChild(imgTemp);
         posX++
         imgTemp.on("click", function(){console.log(this.currentAnimation);});

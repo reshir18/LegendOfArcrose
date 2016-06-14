@@ -91,6 +91,8 @@ Player.prototype.GetAttack = function(){return this.stats.GetStat("attack");}
 
 Player.prototype.GetSpeed = function(){return this.stats.GetStat("speed");}
 
+Player.prototype.GetItems = function(){return this.currentItem;}
+
 Player.prototype.Move = function(animationFrameName)
 {
     this.newMove = "run" + animationFrameName;

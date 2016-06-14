@@ -1,7 +1,7 @@
-var TrapTile = function(x, y, wh, i, c)
+var TrapTile = function(x, y, wh, i, c , d)
 {
 	MapTile.call(this, x, y, wh, "trap", i, "black");
-    this.damages = 0.5;
+    this.damages = d;
     this.hasAction = true;
 };
 
@@ -57,10 +57,11 @@ WallTile.prototype.Position = function()
 	return this.position;
 }
 
-var PortalTile = function(x, y, wh, i)
+var PortalTile = function(x, y, wh, i, name)
 {
     MapTile.call(this, x, y, wh, "portal", i, "#660066");
     this.hasAction = true;
+    this.name = name;
 };
 
 PortalTile.prototype = Object.create(MapTile.prototype);
@@ -70,7 +71,9 @@ PortalTile.prototype.constructor = PortalTile;
 
 PortalTile.prototype.landAction = function(player)
 {
-    map.ResetMapFile(50, "blue", "#003366");
+    createjs.Ticker.paused = true;
+    preload.loadFile("maps/" + this.name + ".json");
+    
 }
 
 PortalTile.prototype.Create = function(tile)
