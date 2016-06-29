@@ -1,3 +1,26 @@
+var ItemFactory = function(){};
+
+ItemFactory.prototype = Object.create(ItemFactory.prototype);
+
+// on corrige le constructeur qui pointe sur celui de Personne
+ItemFactory.prototype.constructor = ItemFactory;
+
+
+
+ItemFactory.prototype.GetItem = function(name)
+{
+    switch(name)
+    {
+        case "shield":
+            return new Shield();
+        case "bow":
+            return new Bow();
+        default:
+            break;
+    }
+}
+
+
 var Items = function(name, manacost)
 {
     this.name = name;

@@ -1,6 +1,7 @@
 var MapTileFactory = function(squareSize)
 {
     this.squareSize = squareSize;
+    this.itemFactory = new ItemFactory();
 };
 
 MapTileFactory.prototype = Object.create(MapTileFactory.prototype);
@@ -25,6 +26,8 @@ MapTileFactory.prototype.GetTileType = function(tile, i, color)
             return new TrapTile(tile.X * 52, tile.Y * 52, this.squareSize, i, "black", tile.Amount);
         case "portalTile":
             return new PortalTile(tile.X * 52, tile.Y * 52, this.squareSize, i, tile.Name);
+        case "item":
+            return new ItemTile(tile.X * 52, tile.Y * 52, this.squareSize, i, this.itemFactory.GetItem(tile.Name), color);
         case "playerSpawn":
             player.Spawn(tile.X * 52, tile.Y * 52);
             return new MapTile(tile.X * 52, tile.Y * 52, this.squareSize, tile.Type, i, color);
@@ -53,13 +56,13 @@ Map.prototype.Create = function(squareSize, color1, color2, mapArray)
     World.width = this.rows * 52;
     World.height = this.columns * 52;
     let color = color2;
-    let factory = new MapTileFactory(squareSize);
+    let mapFactory = new MapTileFactory(squareSize);
     for(let i = 1 ; i < Object.keys(mapArray).length; i++)
     {
         //console.log(mapArray[i].X);
         /*mt = new MapTile(mapArray[i].X * 52, mapArray[i].Y * 52, squareSize, mapArray[i].Type, i, color);
         player.Spawn(16, 16);*/
-        mt = factory.GetTileType(mapArray[i], i, color);
+        mt = mapFactory.GetTileType(mapArray[i], i, color);
         this.map.push(mt);
         this.stage.addChild(mt.Create(mt));
         color = (color == color2 ? color1 : color2);
@@ -107,11 +110,8 @@ Map.prototype.GetMapTile = function(ind)
     return returnTile;
 }
 
-Map.prototype.ResetMapFile = function(squareSize, color1, color2)
+Map.prototype.ResetMapFile = function()
 {
-    createjs.Ticker.paused = true;
     this.stage.removeAllChildren();
     this.map = [];
-    this.Create(squareSize, color1, color2, mapArray);
-    createjs.Ticker.paused = false;
 }

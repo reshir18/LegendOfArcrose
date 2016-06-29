@@ -88,7 +88,7 @@ function checkWallsCollider(item, index)
     let tile = map.GetMapTile(index);
     if(!tile.hasAction)
         return;
-    if(player.GetSprite().x >= tile.Position().x && player.GetSprite().x <= tile.Position().x + tile.Position().width &&
+    if(player.GetSprite().x + 1 >= tile.Position().x && player.GetSprite().x <= tile.Position().x + tile.Position().width &&
             player.GetSprite().y + 16 >= tile.Position().y && player.GetSprite().y <= tile.Position().y + tile.Position().height)
     {
         tile.landAction(player);

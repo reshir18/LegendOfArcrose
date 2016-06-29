@@ -73,7 +73,7 @@ PortalTile.prototype.landAction = function(player)
 {
     createjs.Ticker.paused = true;
     preload.loadFile("maps/" + this.name + ".json");
-    
+    map.ResetMapFile();
 }
 
 PortalTile.prototype.Create = function(tile)
